@@ -75,13 +75,6 @@ router.post("/update/email-provider/:checkId", async (req, res) => {
   res.status(201).json({ url: reclaimUrl });
 });
 
-const extractCompany = (email) => {
-  const emailParts = email.split("@");
-  const domain = emailParts[emailParts.length - 1];
-  const domainParts = domain.split(".");
-  return domainParts[domainParts.length - 2];
-};
-
 router.post("/update/proof", bodyParser.text("*/*"), async (req, res) => {
   const check = await Check.findOne({ checkId: req.query.id });
   if (!check) return res.status(401).send("<h1>Unable to update Proof</h1>");
@@ -89,6 +82,7 @@ router.post("/update/proof", bodyParser.text("*/*"), async (req, res) => {
     ...check.data,
     proofs: JSON.parse(Object.keys(req.body)[0]).proofs,
   };
+  console.log(check.data.proofs)
   const excludedDomains = ["com", "in", "ac", "co", "org", "net", "edu", "gmail", 
   "yahoo", "hotmail", "outlook", "godaddy", "gov", "nic", "net"]
   const emailParts = check.data.proofs.email.split("@");
