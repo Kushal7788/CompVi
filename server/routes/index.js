@@ -93,7 +93,7 @@ router.post("/update/proof", bodyParser.text("*/*"), async (req, res) => {
   console.log(check.data)
   const excludedDomains = ["com", "in", "ac", "co", "org", "net", "edu", "gmail", 
   "yahoo", "hotmail", "outlook", "godaddy", "gov", "nic", "net"]
-  const emailParts = check.data.proofs.emailAddress.split("@");
+  const emailParts = check.data.proofParams.emailAddress.split("@");
   const domain = emailParts[emailParts.length - 1];
   const domainParts = domain.split(".");
   if(excludedDomains.includes(domainParts[0])){
