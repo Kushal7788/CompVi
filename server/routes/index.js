@@ -82,10 +82,18 @@ router.post("/update/proof", bodyParser.text("*/*"), async (req, res) => {
     ...check.data,
     proofs: JSON.parse(Object.keys(req.body)[0]).proofs,
   };
-  console.log(check.data.proofs)
+  await check.save();
+  if (isProofsCorrect) {
+    check.data = {
+      ...check.data,
+      proofParams: check.data.proofs.map((proof) => proof.parameters),
+    };
+  }
+  await check.save();
+  console.log(check.data)
   const excludedDomains = ["com", "in", "ac", "co", "org", "net", "edu", "gmail", 
   "yahoo", "hotmail", "outlook", "godaddy", "gov", "nic", "net"]
-  const emailParts = check.data.proofs.email.split("@");
+  const emailParts = check.data.proofs.emailAddress.split("@");
   const domain = emailParts[emailParts.length - 1];
   const domainParts = domain.split(".");
   if(excludedDomains.includes(domainParts[0])){
@@ -97,12 +105,6 @@ router.post("/update/proof", bodyParser.text("*/*"), async (req, res) => {
   const isProofsCorrect = await reclaim.verifyCorrectnessOfProofs(
     check.data.proofs
   );
-  if (isProofsCorrect) {
-    check.data = {
-      ...check.data,
-      proofParams: check.data.proofs.map((proof) => proof.parameters),
-    };
-  }
   res.status(201).send("<h1>Proof was generated</h1>");
 });
 
