@@ -82,6 +82,7 @@ router.post("/update/proof", bodyParser.text("*/*"), async (req, res) => {
     ...check.data,
     proofs: JSON.parse(Object.keys(req.body)[0]).proofs,
   };
+  await check.save();
   const isProofsCorrect = await reclaim.verifyCorrectnessOfProofs(
     check.data.proofs
   );
@@ -91,6 +92,7 @@ router.post("/update/proof", bodyParser.text("*/*"), async (req, res) => {
       proofParams: check.data.proofs.map((proof) => proof.parameters),
     };
   }
+  await check.save();
   console.log(check.data)
   const excludedDomains = ["com", "in", "ac", "co", "org", "net", "edu", "gmail", 
   "yahoo", "hotmail", "outlook", "godaddy", "gov", "nic", "net"]
